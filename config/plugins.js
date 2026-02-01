@@ -6,7 +6,7 @@ module.exports = () => ({
       populateDefaultDepth: 5,
       populateMaxDepth: 10,
       skipCreatorFields: false,
-      enableSocketIO: true,
+      enableSocketIO: false,
     },
   },
 });

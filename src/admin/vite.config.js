@@ -1,5 +1,6 @@
 // @ts-nocheck
 const { mergeConfig } = require('vite');
+const path = require('path');
 
 const nodeBuiltins = [
   'async_hooks',
@@ -19,22 +20,22 @@ const nodeBuiltins = [
   'tls',
   'url',
   'zlib',
-].reduce((acc, cur) => {
-  acc.push(cur, `node:${cur}`);
-  return acc;
-}, []);
+];
 
 module.exports = (config) => {
+  // Create aliases for all Node built-ins to point to the mock file
+  const aliases = nodeBuiltins.reduce((acc, moduleName) => {
+    acc[moduleName] = path.resolve(__dirname, 'vite-env-mock.js');
+    acc[`node:${moduleName}`] = path.resolve(__dirname, 'vite-env-mock.js');
+    return acc;
+  }, {});
+
   // Important: always return the modified config
   return mergeConfig(config, {
     resolve: {
       alias: {
         '@': '/src',
-      },
-    },
-    build: {
-      rollupOptions: {
-        external: [...nodeBuiltins],
+        ...aliases,
       },
     },
   });
